@@ -1,0 +1,20 @@
+policies:
+  - id: no-email-logging
+    description: Never log email addresses — they are PII and must not appear in logs
+    category: PII
+    severity: high
+
+  - id: no-credit-card-logging
+    description: Never log full or partial credit card numbers — violates PCI-DSS
+    category: PII
+    severity: high
+
+  - id: no-hardcoded-api-keys
+    description: API keys must not be hardcoded in source — use environment variables or a secrets manager
+    category: secrets
+    severity: high
+
+  - id: no-plaintext-passwords
+    description: Passwords must never be stored or logged in plaintext — hash with bcrypt or argon2
+    category: secrets
+    severity: high
