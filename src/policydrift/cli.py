@@ -1,13 +1,17 @@
 import argparse
 import sys
 
+from dotenv import load_dotenv
 from rich import box
+
+load_dotenv()
 from rich.console import Console
 from rich.markup import escape
 from rich.panel import Panel
 from rich.rule import Rule
 from rich.text import Text
 
+from .drift import compute_drift, load_last_scan, save_scan
 from .models import Finding
 from .pipeline import run_scan
 from .policy_loader import load_policies
@@ -33,6 +37,22 @@ def _render_finding(finding: Finding, severity: str) -> Panel:
         box=box.ROUNDED,
         padding=(1, 2),
     )
+
+
+def _render_drift_summary(drift: dict) -> None:
+    new_count = len(drift["new"])
+    fixed_count = len(drift["fixed"])
+    persisting_count = len(drift["persisting"])
+
+    console.print()
+    console.rule("[bold white]Drift since last scan[/]")
+    summary = Text(justify="center")
+    summary.append(f"{new_count} new", style="bold red" if new_count else "dim")
+    summary.append("  ·  ", style="dim")
+    summary.append(f"{fixed_count} fixed", style="bold green" if fixed_count else "dim")
+    summary.append("  ·  ", style="dim")
+    summary.append(f"{persisting_count} persisting", style="bold yellow" if persisting_count else "dim")
+    console.print(summary)
 
 
 def _scan(args: argparse.Namespace) -> None:
@@ -71,6 +91,13 @@ def _scan(args: argparse.Namespace) -> None:
                 console.print(_render_finding(finding, severity))
             console.print()
 
+    if getattr(args, "drift", False):
+        findings_dicts = [f.model_dump() for f in report.findings]
+        previous = load_last_scan(args.repo_path)
+        drift = compute_drift(previous, findings_dicts)
+        save_scan(args.repo_path, findings_dicts)
+        _render_drift_summary(drift)
+
     total = len(report.findings)
     summary = Text(justify="center")
     summary.append(f"{report.files_scanned}", style="bold")
@@ -100,6 +127,9 @@ def main() -> None:
     scan_parser.add_argument("repo_path", help="Path to the repository to scan")
     scan_parser.add_argument(
         "--policies", required=True, metavar="FILE", help="Path to policies YAML"
+    )
+    scan_parser.add_argument(
+        "--drift", action="store_true", help="Compare with last scan and report NEW / FIXED / PERSISTING"
     )
 
     args = parser.parse_args()
