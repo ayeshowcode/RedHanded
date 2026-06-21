@@ -102,7 +102,9 @@ to inspect and tune.
 
 ## Screenshot
 
-<!-- add terminal screenshot here -->
+![Scan output showing 4 violations grouped by severity](screenshot/scan-violations.png)
+
+![Drift summary showing 0 new, 0 fixed, 4 persisting across two scans](screenshot/drift-summary.png)
 
 ---
 
