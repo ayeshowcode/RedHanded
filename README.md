@@ -100,7 +100,6 @@ to inspect and tune.
 
 ---
 
-## Screenshot
 
 ![Scan output showing 4 violations grouped by severity](screenshot/scan-violations.png)
 
