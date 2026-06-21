@@ -38,10 +38,13 @@ cd RedHanded
 uv sync
 
 # Run against the included demo app (has 4 planted violations)
-uv run policydrift scan examples/vulnerable_app.py --policies policies/security.yaml
+uv run policydrift scan examples/ --policies policies/security.yaml
 
 # Run against your own repo
 uv run policydrift scan /path/to/your/repo --policies policies/security.yaml
+
+# Track what changed since your last scan
+uv run policydrift scan /path/to/your/repo --policies policies/security.yaml --drift
 ```
 
 You need an OpenAI API key. Copy `.env.example` to `.env` and add it:
@@ -121,8 +124,6 @@ to inspect and tune.
 
 ## Roadmap
 
-- Drift tracking: remember past scans per repo and report what's new, what's
-  fixed, what persists
 - GitHub Action: run on pull requests, comment findings inline
 - More languages: JS/TS, Go, Java
 - Custom severity thresholds and per-rule ignore lists
