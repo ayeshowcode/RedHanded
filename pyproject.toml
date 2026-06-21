@@ -14,5 +14,13 @@ dependencies = [
     "rich>=15.0.0",
 ]
 
+[project.scripts]
+policydrift = "policydrift.cli:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
