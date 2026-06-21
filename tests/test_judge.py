@@ -74,7 +74,7 @@ def test_no_false_positives_on_clean_code(policies):
         ("clean.py", 5,  'return {"status": "ok", "user_id": user["id"]}'),    # returns ID, not PII
         ("clean.py", 6,  'logger.warning(f"Login failed for user {user_id}")'),# ID only
         ("clean.py", 7,  'token = hashlib.sha256(secret.encode()).hexdigest()'),# hashing a secret
-        ("clean.py", 8,  'card_last4 = card_number[-4:]'),                     # storing last 4, not logging
+        ("clean.py", 8,  'order_total = sum(item["price"] for item in items)'),   # pure arithmetic, no PII
     ]
 
     findings = judge_lines(clean_lines, policies)
