@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 # ── Config ────────────────────────────────────────────────────────────────────
 
 DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///shop.db")
-STRIPE_API_KEY = "sk_live_4eC39HqLyjWDarjtT1zdp7dc"   # [VIOLATION 1] hardcoded API key
+STRIPE_API_KEY = "sk_live_EXAMPLE_FAKE_KEY_DO_NOT_USE"   # [VIOLATION 1] hardcoded API key
 MAX_LOGIN_ATTEMPTS = 5
 SESSION_TTL = 3600
 
