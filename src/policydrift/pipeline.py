@@ -39,8 +39,19 @@ async def _run_async(repo_path: str, policies_path: str) -> ScanReport:
     for result in results:
         findings.extend(result)
 
+    # Deduplicate by (file_path, line_number, policy_id), keeping highest confidence.
+    seen: dict[tuple[str, int, str], int] = {}
+    unique = []
+    for f in findings:
+        key = (f.file_path, f.line_number, f.policy_id)
+        if key not in seen:
+            seen[key] = len(unique)
+            unique.append(f)
+        elif f.confidence > unique[seen[key]].confidence:
+            unique[seen[key]] = f
+
     return ScanReport(
-        findings=findings,
+        findings=unique,
         files_scanned=len({fp for fp, _, _ in lines}),
         policies_checked=len(policies),
     )
